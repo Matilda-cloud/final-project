@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Expense Tracker</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: black;
+            display: flex;
+            justify-content: center;
+            padding-top: 40px;
+        }
+
+        .container {
+            background: pink;
+            padding: 20px;
+            border-radius: 10px;
+            width: 400px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        input,
+        button {
+            width: 95%;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 10px;
+        }
+
+        button {
+            background: rgb(182, 122, 182);
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            background: papayawhip;
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 10px;
+        }
+
+        .delete {
+            background: orchid;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Expense Tracker</h2>
+
+        <h3 id="balance">Balance: ₦0</h3>
+
+        <input type="text" id="text" placeholder="Description">
+        <input type="number" id="amount" placeholder="Amount (+income, -expense)">
+        <button id="addBtn">Add</button>
+
+        <ul id="list"></ul>
+    </div>
+
+    <script>
+        // DOM elements
+        const textInput = document.getElementById("text");
+        const amountInput = document.getElementById("amount");
+        const addBtn = document.getElementById("addBtn");
+        const list = document.getElementById("list");
+        const balanceEl = document.getElementById("balance");
+
+        // Data
+        let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+
+        // Add transaction
+        addBtn.addEventListener("click", () => {
+            const text = textInput.value;
+            const amount = Number(amountInput.value);
+
+            if (text === "" || amount === 0) {
+                alert("Please enter valid data");
+                return;
+            }
+
+            const transaction = {
+                id: Date.now(),
+                text: text,
+                amount: amount
+            };
+
+            transactions.push(transaction);
+            saveData();
+            render();
+
+            textInput.value = "";
+            amountInput.value = "";
+        });
+
+        // Delete transaction
+        function deleteTransaction(id) {
+            transactions = transactions.filter(t => t.id !== id);
+            saveData();
+            render();
+        }
+
+        // Save to localStorage
+        function saveData() {
+            localStorage.setItem("transactions", JSON.stringify(transactions));
+        }
+
+        // Render UI
+        function render() {
+            list.innerHTML = "";
+
+            let balance = 0;
+
+            transactions.forEach(t => {
+                balance += t.amount;
+
+                const li = document.createElement("li");
+                li.innerHTML = `
+      ${t.text} (${t.amount})
+      <button class="delete" onclick="deleteTransaction(${t.id})">x</button>
+    `;
+
+                list.appendChild(li);
+            });
+
+            balanceEl.textContent = "Balance: ₦" + balance;
+        }
+
+        // Initial render
+        render();
+    </script>
+
+</body>
+
+</html>

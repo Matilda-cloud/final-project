@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz App</title>
+    <link rel="stylesheet" href="Quiz App.css">
+</head>
+
+<body>
+
+    <div class="quiz-container">
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+
+        <div class="timer" id="timer">⏱ 10</div>
+
+        <h2 id="question">Question</h2>
+        <div id="answers"></div>
+
+        <button id="nextBtn">Next</button>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "Who was the first female to drive a car in Nigeria?",
+                answers: [
+                    { text: "Funmilayo Ransome-kuti", correct: true },
+                    { text: "Stella Obasonjo ", correct: false },
+                    { text: "Dora Akuyili", correct: false },
+                    { text: "Tiwa Savage", correct: false }
+                ]
+            },
+            {
+                question: "How do you define a meaningful life as you grow older?",
+                answers: [
+                    { text: "A life aligned with purpose", correct: true },
+                    { text: "flexing all over the world", correct: false },
+                    { text: "Being happy and not stressed  too much", correct: false },
+                    { text: "Just living", correct: false }
+                ]
+            },
+            {
+                question: "what fears about the future have you learned to overcome?",
+                answers: [
+                    { text: "The illusion over control", correct: true },
+                    { text: "I just try not to think about the future too much", correct: false },
+                    { text: "What will be will be", correct: false },
+                    { text: "Overthinking it", correct: false }
+                ]
+            },
+            {
+                question: "Experience is the?",
+                answers: [
+                    { text: "Best teacher", correct: true },
+                    { text: "knows it all", correct: false },
+                    { text: "modifies your Knowlege", correct: false },
+                    { text: "brings regret", correct: false }
+                ]
+            },
+            {
+                question: "Women are born to end up?",
+                answers: [
+                    { text: "Great", correct: true },
+                    { text: "In the kitchen", correct: false },
+                    { text: "Being a wife alone", correct: false },
+                    { text: "Just giving birth and taking care of the family", correct: false }
+                ]
+            },
+        ];
+
+        let current = 0;
+        let score = 0;
+        let time = 10;
+        let timerInterval;
+
+        const questionEl = document.getElementById("question");
+        const answersEl = document.getElementById("answers");
+        const nextBtn = document.getElementById("nextBtn");
+        const resultEl = document.getElementById("result");
+        const progressEl = document.getElementById("progress");
+        const timerEl = document.getElementById("timer");
+
+        function startTimer() {
+            time = 10;
+            timerEl.textContent = "⏱ " + time;
+
+            timerInterval = setInterval(() => {
+                time--;
+                timerEl.textContent = "⏱ " + time;
+
+                if (time === 0) {
+                    clearInterval(timerInterval);
+                    nextBtn.style.display = "block";
+                }
+            }, 1000);
+        }
+
+        function showQuestion() {
+            resetState();
+            startTimer();
+
+            const q = questions[current];
+            questionEl.textContent = q.question;
+
+            progressEl.style.width = ((current / questions.length) * 100) + "%";
+
+            q.answers.forEach(answer => {
+                const btn = document.createElement("button");
+                btn.textContent = answer.text;
+
+                btn.onclick = () => selectAnswer(btn, answer.correct);
+
+                answersEl.appendChild(btn);
+            });
+        }
+
+        function resetState() {
+            nextBtn.style.display = "none";
+            answersEl.innerHTML = "";
+        }
+
+        function selectAnswer(button, correct) {
+            clearInterval(timerInterval);
+
+            if (correct) {
+                button.classList.add("correct");
+                score++;
+            } else {
+                button.classList.add("wrong");
+            }
+
+            Array.from(answersEl.children).forEach(btn => {
+                btn.disabled = true;
+            });
+
+            nextBtn.style.display = "block";
+        }
+
+        nextBtn.onclick = () => {
+            current++;
+
+            if (current < questions.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        };
+
+        function showResult() {
+            localStorage.setItem("highScore", score);
+
+            questionEl.textContent = "";
+            answersEl.innerHTML = "";
+            nextBtn.style.display = "none";
+
+            resultEl.innerHTML = `
+    <h2>🎉 Your Score: ${score}</h2>
+    <p>High Score: ${localStorage.getItem("highScore")}</p>
+    <button onclick="restart()">Restart</button>
+  `;
+        }
+
+        function restart() {
+            current = 0;
+            score = 0;
+            resultEl.innerHTML = "";
+            showQuestion();
+        }
+
+        showQuestion();
+    </script>
+
+</body>
+
+</html>

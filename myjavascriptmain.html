@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To do App</title>
+</head>
+<style>
+    body {
+        font-family: 'Times New Roman', Times, serif;
+        background: rgb(155, 129, 96);
+    }
+
+
+    /* color: rgb(55, 45, 55); */
+
+    .app-box {
+        max-width: 500px;
+        margin: 40px auto;
+        padding: 20px;
+        background: linear-gradient(rgb(181, 132, 132), rgb(220, 193, 158), rgb(232, 186, 126));
+        text-align: center;
+        border-radius: 10px;
+    }
+
+    .input-group {
+        display: flex;
+        gap: 2px;
+        /* padding: 10px;
+        width: 70%; */
+    }
+
+    .input-group input {
+        flex: 1;
+    }
+
+    button {
+        padding: 8px 12px;
+        margin-left: 5px;
+        cursor: pointer;
+        background-color: burlywood;
+        border: none;
+        font-family: cursive;
+        color: rgb(55, 45, 55);
+        font-size: 16px;
+        border-radius: 10px;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        margin-top: 20px;
+    }
+
+    li {
+        background: rgb(135, 109, 75);
+        margin: 8px 0;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 10px;
+    }
+
+    /* .completed {
+        text-decoration: line-through;
+        color: gray;
+    } */
+</style>
+
+<body>
+    <div class="app-box">
+        <h2>To Do App</h2>
+
+        <div class="input-group"><input type="text" id="taskInput" placeholder="Enter a Task">
+            <button onclick="addTask()">Add</button>
+        </div>
+
+
+        <ul id="taskList"></ul>
+        <!-- <li>Go to school</li>
+        <li>Create some codes</li>
+        <li>Design some nice outfit</li>
+        <li>Graduate</li>
+        <li>Get a Job</li>
+        <li>Set up a Business</li>
+        <li>Create A blockbuster</li>
+        <li>Travel round the world</li>
+        <li>Have A good life</li> -->
+    </div>
+
+</body>
+<script>
+    function addTask() {
+        const input = document.getElementById("taskInput");
+        const taskText = input.value.trim();
+
+
+
+        if (taskText === "") {
+            alert("Please enter a task.");
+            return;
+        } else {
+
+            const list = document.createElement("li");
+            list.textContent = taskText;
+
+            document.getElementById("taskList").appendChild(list);
+
+            localStorage.setItem("task", taskText);
+
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.textContent = "Delete";
+            deleteBtn.onclick = function () {
+                list.remove();
+            };
+
+            list.appendChild(deleteBtn);
+
+
+            input.value = "";
+
+        }
+
+
+    }
+
+</script>
+
+</html>

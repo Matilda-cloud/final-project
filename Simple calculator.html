@@ -92,6 +92,9 @@
             <button>2</button>
             <button>3</button>
             <button>0</button>
+
+            <button onclick="deleteLast()">DEL</button>
+
         </div>
     </div>
 
@@ -150,6 +153,11 @@
 
         function saveData() {
             localStorage.setItem("calc", expression);
+        }
+
+        function deleteLast() {
+            let display = document.getElementById("display");
+            display.value = display.value.slice(0, -1);
         }
     </script>
 
